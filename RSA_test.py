@@ -6,7 +6,6 @@ p = int(input("p="))
 q = int(input("q="))
 e = int(input("e="))
 
-
 m = p * q
 L = np.lcm(p-1,q-1)
 
@@ -20,24 +19,57 @@ word_count=len(plainlst)
 count = word_count
 asciilst = []
 n = 26
+g = 64
 P = 0
 
 
 for s in plain:    #文字列をn進数に変換
     word_count -= 1
-    ord_num = ord(s) - 65 #Aを基準に
-    #asciilst.append(ord_num)
+    ord_num = ord(s) - g #Aを基準に
     P = P + ord_num * (n ** word_count)
         
+print(P)
 
-    
-C = P ** e % m
+i = 1
+C = P
+
+while i < e:
+    C = C * P % m
+    i += 1
+
+
+#C = P ** e % m
 print("暗号文は")
 print(C)
+tmp = C
+#-----文字に変換-----
+rlist = []
+q = 1
+i = -1
+
+while(q != 0):
+    q = C // n
+    r = C % n
+    rlist.append(r)
+
+    C = q
+    i += 1
+
+rlist.reverse()
+print(rlist)
+plain = []
+ 
+for s in rlist:
+    ord_num = chr(s+g)  
+    plain.append(ord_num)
+    
+plain = ''.join(plain)
+print(plain)
+#-------------------
 
 
-#-----復号化-----
 
+#------------復号化--------------
 
 # 商と余りと割られる数の保存先
 qlist =[]
@@ -49,6 +81,7 @@ t = L
 
 r = s #とりあえず余りとしてaをおく
 i = 0 #式の番号
+
 
 #ユークリッドの互除法----------
 while(r != 0 ):
@@ -63,6 +96,7 @@ while(r != 0 ):
     t = r
     i += 1
 #-------------------------
+
 
 #一次不定方程式------------
 i = i - 2
@@ -96,16 +130,45 @@ while(i > 0):
     i = i-1
 #-------------------------
 
+
 print()
 print("d ≡",j,"(mod",L,")" )
 print()
 
-P = C ** int(j) % m
+#P = C ** int(j) % m
 
+i = 1
+P = C = tmp
+while(i < j):
+    P = P * C % m
+    i += 1
+
+
+#-----文字に変換-----
 print("平文は")
 print (P)
-'''
-for s in range(count-1):
-    a = P % (n**s)
-    print(a)
-'''
+
+
+rlist = []
+q = 1
+i = -1
+
+while(q != 0):
+    q = P // n
+    r = P % n
+    rlist.append(r)
+
+    P = q
+    i += 1
+
+rlist.reverse()
+print(rlist)
+plain = []
+ 
+for s in rlist:
+    ord_num = chr(s+g)  
+    plain.append(ord_num)
+    
+plain = ''.join(plain)
+print(plain)
+#-------------------
